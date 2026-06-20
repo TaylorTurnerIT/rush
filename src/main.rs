@@ -1,8 +1,12 @@
 #[allow(unused_imports)]
 use std::io::{self, Read, Write};
 
-fn check_type(command: &str, builtin: [&str; 3]) -> bool {
-    builtin.contains(&command)
+fn check_type(command: &str, builtin: [&str; 3]) {
+    if builtin.contains(&command) {
+        println!("{} is a shell builtin", command);
+    } else {
+        println!("{} invalid_command", command)
+    }
 }
 
 fn main() {
@@ -42,11 +46,7 @@ fn main() {
                     user_input.clear();
                     continue;
                 }
-                if check_type(command, builtin) {
-                    println!("{} is a shell builtin", args[0])
-                } else {
-                    println!("{} invalid_command", args[0])
-                }
+                check_type(args[0], builtin)
             }
             _ => println!("{}: command not found", command),
         }
