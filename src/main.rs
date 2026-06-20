@@ -7,12 +7,14 @@ fn main() {
 
     loop {
         print!("$ ");
+        io::stdout().flush().unwrap();
+
         stdin
             .read_line(&mut user_input)
             .expect("Failed to read line");
+
         println!("{} is not a recognised command", user_input.trim());
-        io::stdout().flush().unwrap();
-        break;
+        user_input.clear();
     }
 }
 
