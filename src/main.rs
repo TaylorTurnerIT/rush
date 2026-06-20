@@ -23,9 +23,13 @@ fn main() {
             continue;
         }
 
-        match trimmed_user_input {
+        let mut tokens = trimmed_user_input.split_whitespace();
+        let command = tokens.next().unwrap();
+        let parameters: Vec<&str> = tokens.collect();
+        match command {
             "exit" => break,
-            _ => println!("{}: command not found", trimmed_user_input),
+            "echo" => println!("{}", parameters.join(" ")),
+            _ => println!("{}: command not found", command),
         }
 
         user_input.clear();
