@@ -13,7 +13,11 @@ fn main() {
             .read_line(&mut user_input)
             .expect("Failed to read line");
 
-        println!("{}: command not found", user_input.trim());
+        let trimmed_user_input = user_input.trim();
+        if !trimmed_user_input.is_empty() {
+            println!("{}: command not found", trimmed_user_input);
+        }
+
         user_input.clear();
     }
 }
