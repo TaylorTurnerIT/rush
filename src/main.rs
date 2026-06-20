@@ -13,7 +13,7 @@ fn main() {
             .read_line(&mut user_input)
             .expect("Failed to read line");
 
-        println!("{} is not a recognised command", user_input.trim());
+        println!("{}: command not found", user_input.trim());
         user_input.clear();
     }
 }
