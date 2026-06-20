@@ -1,9 +1,15 @@
 #[allow(unused_imports)]
 use std::io::{self, Read, Write};
 
+fn check_type(command: &str, builtin: [&str; 3]) -> bool {
+    builtin.contains(&command)
+}
+
 fn main() {
     let mut user_input = String::new();
     let stdin = io::stdin();
+
+    let builtin: [&str; 3] = ["exit", "echo", "type"];
 
     loop {
         // Shell prefix output
@@ -15,7 +21,7 @@ fn main() {
             .read_line(&mut user_input)
             .expect("Failed to read line");
 
-        // Input handling
+        // Input processing
         let trimmed_user_input = user_input.trim();
 
         if trimmed_user_input.is_empty() {
@@ -25,10 +31,23 @@ fn main() {
 
         let mut tokens = trimmed_user_input.split_whitespace();
         let command = tokens.next().unwrap();
-        let parameters: Vec<&str> = tokens.collect();
+        let args: Vec<&str> = tokens.collect();
+
+        // Command handling
         match command {
             "exit" => break,
-            "echo" => println!("{}", parameters.join(" ")),
+            "echo" => println!("{}", args.join(" ")),
+            "type" => {
+                if args.is_empty() {
+                    user_input.clear();
+                    continue;
+                }
+                if check_type(command, builtin) {
+                    println!("{} is a shell builtin", args[0])
+                } else {
+                    println!("{} invalid_command", args[0])
+                }
+            }
             _ => println!("{}: command not found", command),
         }
 
