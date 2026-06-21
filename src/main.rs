@@ -80,7 +80,11 @@ fn main() {
                 continue;
             }
             _ => {
-                panic!("type command escaped with parameters: {}", trimmed_user_input);
+                panic!(
+                    "type command escaped with parameters: {}",
+                    trimmed_user_input
+                );
+            }
         }
     }
 }
