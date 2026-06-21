@@ -15,14 +15,9 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<(
             }
         }
         "type" => {
-            // requires a command to check
-            if args.is_empty() {
+            if args.is_empty() || is_type {
                 return ControlFlow::Continue(());
             }
-            // type type
-            // if is_type {
-            //     return ControlFlow::Break(());
-            // }
 
             if exec_command(args[0], &args, true) == ControlFlow::Break(()) {
                 println!("{}: not found", args[0])
