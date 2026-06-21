@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use std::io::{self, Read, Write};
+use std::os::linux;
 
 #[derive(PartialEq)]
 enum ControlFlow {
@@ -40,10 +41,22 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
             if is_type {
                 return ControlFlow::TypeNotFound;
             }
+
+            // check PATH
+            let file_location = search_path();
+            if file_location != "" {
+                println!("{} is a {}", args[0], )
+                return ControlFlow::Continue;
+            }
+            // not built in OR file
             println!("{}: command not found", command)
         }
     }
     return ControlFlow::TypeBuiltin;
+}
+
+fn search_path() -> String {
+    return "".to_string()
 }
 
 fn main() {
