@@ -2,7 +2,7 @@
 use std::io::{self, Read, Write};
 use std::ops::ControlFlow;
 
-fn exec_command(command: &str, args: Vec<&str>, is_type: bool) -> ControlFlow<()> {
+fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<()> {
     match command {
         "exit" => {
             if !is_type {
@@ -16,10 +16,10 @@ fn exec_command(command: &str, args: Vec<&str>, is_type: bool) -> ControlFlow<()
         }
         "type" => {
             if !is_type && !args.is_empty() {
-                if exec_command(command, args, true) == ControlFlow::Break(()) {
+                if exec_command(command, &args, true) == ControlFlow::Break(()) {
                     println!("{}: not found", command)
                 }
-                println!("{} is a shell builtin", command)
+                println!("{} is a shell builtin", args[0])
             }
         }
         _ => {
@@ -60,7 +60,7 @@ fn main() {
         let args: Vec<&str> = tokens.collect();
 
         // Command handling
-        match exec_command(command, args, false) {
+        match exec_command(&command, &args, false) {
             ControlFlow::Break(()) => break,
             ControlFlow::Continue(()) => {
                 user_input.clear();
