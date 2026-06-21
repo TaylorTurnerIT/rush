@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use std::env;
+use std::env::current_dir;
 use std::fs;
 use std::io::{self, Read, Write};
 use std::os;
@@ -54,7 +55,7 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
             let file_location = search_path(&command);
             // file found
             if file_location != "" {
-                println!("{} is {}", args[0], "TODO");
+                println!("{} is {}", &command, file_location);
                 return ControlFlow::Continue;
             }
             // not builtin AND not file
@@ -78,14 +79,19 @@ fn search_path(command: &str) -> String {
     match env::var_os(key) {
         Some(paths) => {
             for path in env::split_paths(&paths) {
-                let mut current_dir = match path.read_dir() {
+                let mut current_path_dir = match path.read_dir() {
                     Ok(dir) => dir,
                     _ => continue, // ignore missing directories in path
                 };
-                println!(
-                    "{:?}",
-                    current_dir.find(|x| x.as_ref().unwrap().file_name() == command)
-                );
+                let matched_file =
+                    current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
+                match matched_file {
+                    Some(Ok(f)) => {
+                        // println!("{}", f.path().display()); //debug print
+                        return f.path().display().to_string();
+                    }
+                    _ => continue,
+                }
             }
         }
         None => println!("{key} is not defined in the environment."),
