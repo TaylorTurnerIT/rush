@@ -70,7 +70,7 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
 fn search_path(command: &str) -> String {
     // let command_path = env::var("PATH").unwrap();
     // println!("{}", env::current_dir().unwrap().display());
-    println!("{:#?}", env::var("PATH")); // this is how you get PATH
+    // println!("{:#?}", env::var("PATH")); // this is how you get PATH
 
     let key = "PATH";
     match env::var_os(key) {
@@ -80,15 +80,21 @@ fn search_path(command: &str) -> String {
                     Ok(dir) => dir,
                     _ => continue, // ignore missing directories in path
                 };
-                let matched_file =
-                    current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
-                match matched_file {
-                    Some(Ok(f)) => {
-                        println!("dir: {}", f.path().display()); //debug print
-                        return f.path().display().to_string();
-                    }
-                    _ => continue,
-                }
+
+                println!(
+                    "debug: {:#?}",
+                    current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command)
+                );
+
+                // let matched_file =
+                //     current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
+                // match matched_file {
+                //     Some(Ok(f)) => {
+                //         println!("dir: {}", f.path().display()); //debug print
+                //         return f.path().display().to_string();
+                //     }
+                //     _ => continue,
+                // }
             }
         }
         None => println!("{key} is not defined in the environment."),
