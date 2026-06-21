@@ -1,19 +1,41 @@
 #[allow(unused_imports)]
 use std::io::{self, Read, Write};
+use std::ops::ControlFlow;
 
-fn check_type(command: &str, builtin: [&str; 3]) {
-    if builtin.contains(&command) {
-        println!("{} is a shell builtin", command);
-    } else {
-        println!("{} invalid_command", command)
+fn exec_command(command: &str, args: Vec<&str>, is_type: bool) -> ControlFlow<()> {
+    match command {
+        "exit" => {
+            if !is_type {
+                return ControlFlow::Break(());
+            }
+        }
+        "echo" => {
+            if !is_type {
+                println!("{}", args.join(" "))
+            }
+        }
+        "type" => {
+            if !is_type && !args.is_empty() {
+                if exec_command(command, args, true) == ControlFlow::Break(()) {
+                    println!("{}: not found", command)
+                }
+                println!("{} is a shell builtin", command)
+            }
+        }
+        _ => {
+            if !is_type {
+                println!("{}: command not found", command)
+            } else {
+                return ControlFlow::Break(());
+            }
+        }
     }
+    return ControlFlow::Continue(());
 }
 
 fn main() {
     let mut user_input = String::new();
     let stdin = io::stdin();
-
-    let builtin: [&str; 3] = ["exit", "echo", "type"];
 
     loop {
         // Shell prefix output
@@ -38,19 +60,12 @@ fn main() {
         let args: Vec<&str> = tokens.collect();
 
         // Command handling
-        match command {
-            "exit" => break,
-            "echo" => println!("{}", args.join(" ")),
-            "type" => {
-                if args.is_empty() {
-                    user_input.clear();
-                    continue;
-                }
-                check_type(args[0], builtin)
+        match exec_command(command, args, false) {
+            ControlFlow::Break(()) => break,
+            ControlFlow::Continue(()) => {
+                user_input.clear();
+                continue;
             }
-            _ => println!("{}: command not found", command),
         }
-
-        user_input.clear();
     }
 }
