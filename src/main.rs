@@ -1,11 +1,6 @@
 #[allow(unused_imports)]
 use std::env;
-use std::env::current_dir;
-use std::fs;
-use std::io::{self, Read, Write};
-use std::os;
-use std::path::Path;
-use std::thread::current;
+use std::io::{self, Write};
 
 #[derive(PartialEq)]
 enum ControlFlow {
@@ -47,18 +42,21 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
         }
         // -------------------------------------------------------------------------
         _ => {
-            if is_type {
-                return ControlFlow::TypeNotFound;
-            }
-
             // check PATH
             let file_location = search_path(&command);
             // file found
             if file_location != "" {
+                if is_type {
+                    return ControlFlow::TypeFile;
+                }
                 println!("{} is {}", &command, file_location);
                 return ControlFlow::Continue;
             }
+
             // not builtin AND not file
+            if is_type {
+                return ControlFlow::TypeNotFound;
+            }
             println!("{}: command not found", command)
         }
     }
