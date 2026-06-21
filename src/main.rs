@@ -36,13 +36,13 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
 
             if exec_command(args[0], &args, true) == ControlFlow::TypeNotFound {
                 // check PATH
-                let file_location = search_path(&command);
+                let file_location = search_path(&args[0]);
                 // file found
                 if file_location != "" {
                     if is_type {
                         return ControlFlow::TypeFile;
                     }
-                    println!("{} is {}", &command, file_location);
+                    println!("{} is {}", &args[0], file_location);
                     return ControlFlow::Continue;
                 }
                 println!("{}: not found", args[0])
@@ -81,20 +81,20 @@ fn search_path(command: &str) -> String {
                     _ => continue, // ignore missing directories in path
                 };
 
-                println!(
-                    "debug: {:#?}",
-                    current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command)
-                );
+                // println!(
+                //     "debug: {:#?}",
+                //     current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command)
+                // );
 
-                // let matched_file =
-                //     current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
-                // match matched_file {
-                //     Some(Ok(f)) => {
-                //         println!("dir: {}", f.path().display()); //debug print
-                //         return f.path().display().to_string();
-                //     }
-                //     _ => continue,
-                // }
+                let matched_file =
+                    current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
+                match matched_file {
+                    Some(Ok(f)) => {
+                        println!("dir: {}", f.path().display()); //debug print
+                        return f.path().display().to_string();
+                    }
+                    _ => continue,
+                }
             }
         }
         None => println!("{key} is not defined in the environment."),
