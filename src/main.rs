@@ -1,12 +1,20 @@
 #[allow(unused_imports)]
 use std::io::{self, Read, Write};
-use std::ops::ControlFlow;
 
-fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<()> {
+#[derive(PartialEq)]
+enum ControlFlow {
+    Break,
+    Continue,
+    TypeBuiltin,
+    TypeFile,
+    TypeNotFound,
+}
+
+fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
     match command {
         "exit" => {
             if !is_type {
-                return ControlFlow::Break(());
+                return ControlFlow::Break;
             }
         }
         "echo" => {
@@ -15,11 +23,14 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<(
             }
         }
         "type" => {
-            if args.is_empty() || is_type {
-                return ControlFlow::Continue(());
+            if args.is_empty() {
+                return ControlFlow::Continue;
+            }
+            if is_type {
+                return ControlFlow::TypeBuiltin;
             }
 
-            if exec_command(args[0], &args, true) == ControlFlow::Break(()) {
+            if exec_command(args[0], &args, true) == ControlFlow::TypeNotFound {
                 println!("{}: not found", args[0])
             } else {
                 println!("{} is a shell builtin", args[0])
@@ -27,12 +38,12 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<(
         }
         _ => {
             if is_type {
-                return ControlFlow::Break(());
+                return ControlFlow::TypeNotFound;
             }
             println!("{}: command not found", command)
         }
     }
-    return ControlFlow::Continue(());
+    return ControlFlow::TypeBuiltin;
 }
 
 fn main() {
@@ -63,11 +74,13 @@ fn main() {
 
         // Command handling
         match exec_command(&command, &args, false) {
-            ControlFlow::Break(()) => break,
-            ControlFlow::Continue(()) => {
+            ControlFlow::Break => break,
+            ControlFlow::Continue => {
                 user_input.clear();
                 continue;
             }
+            _ => {
+                panic!("type command escaped with parameters: {}", trimmed_user_input);
         }
     }
 }
