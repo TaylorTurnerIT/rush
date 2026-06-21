@@ -1,6 +1,10 @@
 #[allow(unused_imports)]
+use std::env;
+use std::fs;
 use std::io::{self, Read, Write};
-use std::os::linux;
+use std::os;
+use std::path::Path;
+use std::thread::current;
 
 #[derive(PartialEq)]
 enum ControlFlow {
@@ -13,16 +17,19 @@ enum ControlFlow {
 
 fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
     match command {
+        // -------------------------------------------------------------------------
         "exit" => {
             if !is_type {
                 return ControlFlow::Break;
             }
         }
+        // -------------------------------------------------------------------------
         "echo" => {
             if !is_type {
                 println!("{}", args.join(" "))
             }
         }
+        // -------------------------------------------------------------------------
         "type" => {
             if args.is_empty() {
                 return ControlFlow::Continue;
@@ -37,26 +44,53 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
                 println!("{} is a shell builtin", args[0])
             }
         }
+        // -------------------------------------------------------------------------
         _ => {
             if is_type {
                 return ControlFlow::TypeNotFound;
             }
 
             // check PATH
-            let file_location = search_path();
+            let file_location = search_path(&command);
+            // file found
             if file_location != "" {
-                println!("{} is a {}", args[0], )
+                println!("{} is {}", args[0], "TODO");
                 return ControlFlow::Continue;
             }
-            // not built in OR file
+            // not builtin AND not file
             println!("{}: command not found", command)
         }
     }
-    return ControlFlow::TypeBuiltin;
+
+    if is_type {
+        return ControlFlow::TypeBuiltin;
+    } else {
+        return ControlFlow::Continue;
+    }
 }
 
-fn search_path() -> String {
-    return "".to_string()
+fn search_path(command: &str) -> String {
+    // let command_path = env::var("PATH").unwrap();
+    // println!("{}", env::current_dir().unwrap().display());
+    // println!("{:#?}", env::var("PATH")); // this is how you get PATH
+
+    let key = "PATH";
+    match env::var_os(key) {
+        Some(paths) => {
+            for path in env::split_paths(&paths) {
+                let mut current_dir = match path.read_dir() {
+                    Ok(dir) => dir,
+                    _ => continue, // ignore missing directories in path
+                };
+                println!(
+                    "{:?}",
+                    current_dir.find(|x| x.as_ref().unwrap().file_name() == command)
+                );
+            }
+        }
+        None => println!("{key} is not defined in the environment."),
+    }
+    return "".to_string();
 }
 
 fn main() {
