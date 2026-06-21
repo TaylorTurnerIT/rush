@@ -69,7 +69,7 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
 
 fn search_path(command: &str) -> String {
     // let command_path = env::var("PATH").unwrap();
-    // println!("{}", env::current_dir().unwrap().display());
+    println!("{}", env::current_dir().unwrap().display());
     // println!("{:#?}", env::var("PATH")); // this is how you get PATH
 
     let key = "PATH";
