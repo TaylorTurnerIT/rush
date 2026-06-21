@@ -20,7 +20,7 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<(
             }
             if !is_type {
                 if exec_command(command, &args, true) == ControlFlow::Break(()) {
-                    println!("{}: not found", command)
+                    println!("{}: not found", args[0])
                 }
                 println!("{} is a shell builtin", args[0])
             } else {
