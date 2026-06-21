@@ -45,7 +45,7 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
                     println!("{} is {}", &command, file_location);
                     return ControlFlow::Continue;
                 }
-                println!("{}: not found (type)", args[0])
+                println!("{}: not found", args[0])
             } else {
                 println!("{} is a shell builtin", args[0])
             }
@@ -84,7 +84,7 @@ fn search_path(command: &str) -> String {
                     current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
                 match matched_file {
                     Some(Ok(f)) => {
-                        // println!("{}", f.path().display()); //debug print
+                        println!("{}", f.path().display()); //debug print
                         return f.path().display().to_string();
                     }
                     _ => continue,
