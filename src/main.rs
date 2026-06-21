@@ -90,7 +90,7 @@ fn search_path(command: &str) -> String {
                     current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
                 match matched_file {
                     Some(Ok(f)) => {
-                        println!("dir: {}", f.path().display()); //debug print
+                        println!("{}", f.path().display()); //debug print
                         return f.path().display().to_string();
                     }
                     _ => continue,
