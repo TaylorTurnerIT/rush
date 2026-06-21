@@ -15,17 +15,19 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<(
             }
         }
         "type" => {
+            // requires a command to check
             if args.is_empty() {
                 return ControlFlow::Continue(());
             }
-            if !is_type {
-                if exec_command(command, &args, true) == ControlFlow::Break(()) {
-                    println!("{}: not found", args[0])
-                }
-                println!("{} is a shell builtin", args[0])
-            } else {
-                // type command cannot find target command
+            // type type
+            if is_type {
                 return ControlFlow::Break(());
+            }
+
+            if exec_command(args[0], &args, true) == ControlFlow::Break(()) {
+                println!("{}: not found", args[0])
+            } else {
+                println!("{} is a shell builtin", args[0])
             }
         }
         _ => {
