@@ -45,7 +45,7 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
                     println!("{} is {}", &command, file_location);
                     return ControlFlow::Continue;
                 }
-                println!("{}: not found", args[0])
+                println!("{}: not found (type)", args[0])
             } else {
                 println!("{} is a shell builtin", args[0])
             }
