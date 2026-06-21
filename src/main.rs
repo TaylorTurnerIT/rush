@@ -20,9 +20,9 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<(
                 return ControlFlow::Continue(());
             }
             // type type
-            if is_type {
-                return ControlFlow::Break(());
-            }
+            // if is_type {
+            //     return ControlFlow::Break(());
+            // }
 
             if exec_command(args[0], &args, true) == ControlFlow::Break(()) {
                 println!("{}: not found", args[0])
