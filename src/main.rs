@@ -62,7 +62,7 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
     }
 
     if is_type {
-        println!("blarg")
+        println!("blarg");
         return ControlFlow::TypeBuiltin;
     } else {
         return ControlFlow::Continue;
