@@ -35,6 +35,16 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
             }
 
             if exec_command(args[0], &args, true) == ControlFlow::TypeNotFound {
+                // check PATH
+                let file_location = search_path(&command);
+                // file found
+                if file_location != "" {
+                    if is_type {
+                        return ControlFlow::TypeFile;
+                    }
+                    println!("{} is {}", &command, file_location);
+                    return ControlFlow::Continue;
+                }
                 println!("{}: not found", args[0])
             } else {
                 println!("{} is a shell builtin", args[0])
@@ -42,17 +52,6 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
         }
         // -------------------------------------------------------------------------
         _ => {
-            // check PATH
-            let file_location = search_path(&command);
-            // file found
-            if file_location != "" {
-                if is_type {
-                    return ControlFlow::TypeFile;
-                }
-                println!("{} is {}", &command, file_location);
-                return ControlFlow::Continue;
-            }
-
             // not builtin AND not file
             if is_type {
                 return ControlFlow::TypeNotFound;
@@ -62,7 +61,6 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow {
     }
 
     if is_type {
-        println!("blarg");
         return ControlFlow::TypeBuiltin;
     } else {
         return ControlFlow::Continue;
