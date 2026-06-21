@@ -26,11 +26,10 @@ fn exec_command(command: &str, args: &Vec<&str>, is_type: bool) -> ControlFlow<(
             }
         }
         _ => {
-            if !is_type {
-                println!("{}: command not found", command)
-            } else {
+            if is_type {
                 return ControlFlow::Break(());
             }
+            println!("{}: command not found", command)
         }
     }
     return ControlFlow::Continue(());
