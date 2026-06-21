@@ -1,6 +1,9 @@
 #[allow(unused_imports)]
 use std::env;
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    os::unix::fs::PermissionsExt,
+};
 
 #[derive(PartialEq)]
 enum ControlFlow {
@@ -91,7 +94,11 @@ fn search_path(command: &str) -> String {
                 match matched_file {
                     Some(Ok(f)) => {
                         // println!("{}", f.path().display()); //debug print
-                        return f.path().display().to_string();
+                        // println!("{:o}", f.metadata().unwrap().permissions().mode());
+                        if f.metadata().unwrap().permissions().mode() & 0o111 != 0 {
+                            return f.path().display().to_string();
+                        }
+                        continue;
                     }
                     _ => continue,
                 }
