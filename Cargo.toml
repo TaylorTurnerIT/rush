@@ -11,7 +11,7 @@ bytes = "1.3.0"                                  # helps manage buffers
 thiserror = "1.0.38"
 
 [[bin]]
-name = "shell"
+name = "codecrafters-shell"
 path = "src/main.rs"
 
 [[bin]]
