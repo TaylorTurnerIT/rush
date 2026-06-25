@@ -16,6 +16,7 @@ fn main() {
             return;
         }
     };
+    println!("DEBUG: PATH == {}", paths.clone().into_string().unwrap());
 
     // Iterate through each directory in PATH
     let mut dir_files;
@@ -27,6 +28,11 @@ fn main() {
 
         match dir_files.find(|x| x.as_ref().unwrap().file_name() == command) {
             Some(Ok(f)) => {
+                println!(
+                    "DEBUG: found file {} at {}",
+                    command.to_str().unwrap(),
+                    f.path().to_str().unwrap()
+                );
                 if f.metadata().unwrap().permissions().mode() & 0o111 != 0 {
                     println!("{}", f.path().display().to_string());
                 }

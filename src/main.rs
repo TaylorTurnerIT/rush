@@ -9,8 +9,8 @@ use std::{
 fn exec_command(command: &str, args: &Vec<&str>) {
     Command::new(command)
         .args(args)
-        .output()
-        .expect("failed to execute process");
+        .spawn()
+        .expect("Failed to execute command");
     return;
 }
 
