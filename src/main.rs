@@ -7,10 +7,27 @@ use std::{
 };
 
 fn exec_command(command: &str, args: &Vec<&str>) {
-    Command::new(command)
-        .args(args)
-        .spawn()
-        .expect("Failed to execute command");
+    // Check if builtin
+    let builtin_command =
+        "/var/home/taylort3450/ComputerScience/shell-rs/target/release/".to_string() + command;
+    let run_builtin = Command::new(builtin_command).args(args).spawn();
+    match run_builtin {
+        Ok(mut child) => {
+            child.wait().unwrap();
+            return;
+        }
+        Err(_e) => (),
+    }
+
+    // Check if in PATH
+    let run = Command::new(command).args(args).spawn();
+    match run {
+        Ok(mut child) => {
+            child.wait().unwrap();
+            return;
+        }
+        Err(_e) => println!("{} is not a command", command),
+    }
     return;
 }
 
@@ -29,7 +46,7 @@ fn main() {
         // Get user input
         match stdin.read_line(&mut user_input) {
             Ok(_t) => (),
-            Err(e) => eprint!("Error: {}", e),
+            Err(e) => println!("Error: {}", e),
         }
 
         // Input processing

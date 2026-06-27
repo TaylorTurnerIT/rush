@@ -1,11 +1,18 @@
 use std::env;
-use std::ffi::OsStr;
+use std::ffi::OsString;
 use std::os::unix::fs::PermissionsExt;
 
 fn main() {
+    // println!("Calling custom type binary...");
     // Collect args
-    let args: Vec<String> = std::env::args().collect();
-    let command: &OsStr = OsStr::new(&args[1]);
+    // let args: Vec<String> = std::env::args().collect();
+    let command = match std::env::args().nth(1) {
+        Some(c) => c,
+        None => {
+            // eprintln!("type: missing argument");
+            return;
+        }
+    };
 
     // Fetch PATH from the OS
     let paths;
@@ -16,7 +23,6 @@ fn main() {
             return;
         }
     };
-    println!("DEBUG: PATH == {}", paths.clone().into_string().unwrap());
 
     // Iterate through each directory in PATH
     let mut dir_files;
@@ -26,20 +32,17 @@ fn main() {
             Err(_e) => return,
         }
 
-        match dir_files.find(|x| x.as_ref().unwrap().file_name() == command) {
+        match dir_files.find(|x| x.as_ref().unwrap().file_name() == OsString::from(&command)) {
             Some(Ok(f)) => {
-                println!(
-                    "DEBUG: found file {} at {}",
-                    command.to_str().unwrap(),
-                    f.path().to_str().unwrap()
-                );
                 if f.metadata().unwrap().permissions().mode() & 0o111 != 0 {
-                    println!("{}", f.path().display().to_string());
+                    println!("{} is {}", command, f.path().display().to_string());
+                    return;
                 }
             }
-            _ => return,
+            _ => (),
         }
     }
+    println!("{}: not found", command)
 }
 
 // fn search_path(command: &str) -> String {
