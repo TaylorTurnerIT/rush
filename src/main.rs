@@ -25,7 +25,7 @@ fn exec_command(command: &str, args: &Vec<&str>) {
             child.wait().unwrap();
             return;
         }
-        Err(_e) => eprintln!("{}", _e),
+        Err(_e) => (),
     }
 
     // Check if in PATH
