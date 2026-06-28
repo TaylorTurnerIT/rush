@@ -13,12 +13,10 @@ fn main() {
     };
 
     // Fetch PATH from the OS
-
     let exe_dir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
 
-    // Replace lines 16-29 with:
     let raw_path = env::var_os("PATH").unwrap_or_default();
-    let mut search_dirs: Vec<PathBuf> = vec![exe_dir];
+    let mut search_dirs: Vec<PathBuf> = vec![exe_dir.clone()];
     search_dirs.extend(env::split_paths(&raw_path));
     let paths = env::join_paths(search_dirs).unwrap();
 
@@ -33,6 +31,7 @@ fn main() {
         match dir_files.find(|x| x.as_ref().unwrap().file_name() == OsString::from(&command)) {
             Some(Ok(f)) => {
                 if f.metadata().unwrap().permissions().mode() & 0o111 != 0 {
+                    if f.path().parent().unwrap() == exe_dir {}
                     println!("{} is {}", command, f.path().display().to_string());
                     return;
                 }
