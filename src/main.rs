@@ -17,7 +17,7 @@ fn exec_command(command: &str, args: &Vec<&str>) {
     // };
 
     // Check if builtin
-    let exe_dir = env::current_exe().unwrap();
+    let exe_dir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
     let builtin_command = exe_dir.join(command);
     let run_builtin = Command::new(builtin_command).args(args).spawn();
     match run_builtin {

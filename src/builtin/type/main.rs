@@ -21,8 +21,12 @@ fn main() {
         }
     };
 
+    let exe_dir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
+    let builtin_command = exe_dir.join(command);
+
     // Iterate through each directory in PATH
     let mut dir_files;
+    paths = paths.join(builtin_command.to_str());
     for dir in env::split_paths(&paths) {
         match dir.read_dir() {
             Ok(f) => dir_files = f,
