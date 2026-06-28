@@ -12,6 +12,9 @@ fn main() {
         }
     };
 
+    if command == "exit" {
+        println!("exit is a shell builtin");
+    }
     // Fetch PATH from the OS
     let exe_dir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
 
