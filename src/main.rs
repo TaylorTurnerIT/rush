@@ -75,7 +75,7 @@ fn main() {
 
         // Command handling
         if command == "exit" {
-            println!("exit is a shell builtin")
+            println!("exit is a shell builtin");
             break;
         }
 
