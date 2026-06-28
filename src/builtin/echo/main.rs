@@ -1,10 +1,7 @@
 use std::env;
 
 fn main() {
-    let message = match env::args().next() {
-        Some(msg) => msg,
-        None => "".to_string(),
-    };
+    let message: String = env::args().collect();
     print!("{}", message);
     return;
 }
