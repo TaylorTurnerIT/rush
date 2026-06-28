@@ -1,22 +1,32 @@
 #[allow(unused_imports)]
 use std::env;
+use std::io::{self, Write};
 use std::process::Command;
-use std::{
-    io::{self, Write},
-    // os::unix::fs::PermissionsExt,
-};
 
 fn exec_command(command: &str, args: &Vec<&str>) {
+    // Add builtin directory to PATH temporarily
+    // let exe_dir = ;
+    // Fetch PATH from the OS and append "builtin"
+    // let paths;
+    // match env::var_os("PATH") {
+    // Some(val) => env::set_var("PATH", join_paths(val, ),
+    // None => {
+    // println!("PATH should be defined in the environment.");
+    // return;
+    // }
+    // };
+
     // Check if builtin
-    let builtin_command =
-        "/var/home/taylort3450/ComputerScience/shell-rs/target/release/".to_string() + command;
+    let exe_dir = env::current_exe().unwrap();
+    let builtin_command = exe_dir.join(command);
+    println!("DEBUG: builtin -> {}", builtin_command.as_ref());
     let run_builtin = Command::new(builtin_command).args(args).spawn();
     match run_builtin {
         Ok(mut child) => {
             child.wait().unwrap();
             return;
         }
-        Err(_e) => (),
+        Err(_e) => eprintln!("{}", _e),
     }
 
     // Check if in PATH
@@ -69,6 +79,10 @@ fn main() {
             break;
         }
 
+        // match env::current_exe() {
+        //     Ok(exe_path) => println!("Path of this executable is: {}", exe_path.display()),
+        //     Err(e) => println!("failed to get current exe path: {e}"),
+        // };
         exec_command(&command, &args);
         user_input.clear();
     }

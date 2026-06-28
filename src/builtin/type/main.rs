@@ -3,13 +3,10 @@ use std::ffi::OsString;
 use std::os::unix::fs::PermissionsExt;
 
 fn main() {
-    // println!("Calling custom type binary...");
     // Collect args
-    // let args: Vec<String> = std::env::args().collect();
     let command = match std::env::args().nth(1) {
         Some(c) => c,
         None => {
-            // eprintln!("type: missing argument");
             return;
         }
     };
@@ -44,33 +41,3 @@ fn main() {
     }
     println!("{}: not found", command)
 }
-
-// fn search_path(command: &str) -> String {
-// let command_path = env::var("PATH").unwrap();
-// println!("{}", env::current_dir().unwrap().display());
-// println!("{:#?}", env::var("PATH")); // this is how you get PATH
-
-// Add builtin to PATH variable
-// todo!();
-
-// for path in env::split_paths(&paths) {
-//     let mut current_path_dir = match path.read_dir() {
-//         Ok(dir) => dir,
-//         _ => continue,
-//     };
-
-//     let matched_file =
-//         current_path_dir.find(|x| x.as_ref().unwrap().file_name() == command);
-//     match matched_file {
-//         Some(Ok(f)) => {
-//             if f.metadata().unwrap().permissions().mode() & 0o111 != 0 {
-//                 return f.path().display().to_string();
-//             }
-//             continue;
-//         }
-//         _ => continue,
-//     }
-// }
-// }
-// }
-// }
