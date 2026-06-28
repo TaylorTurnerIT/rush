@@ -23,7 +23,7 @@ fn exec_command(command: &str, args: &Vec<&str>) {
             child.wait().unwrap();
             return;
         }
-        Err(_e) => println!("{} is not a command", command),
+        Err(_e) => println!("{}: command not found", command),
     }
     return;
 }
