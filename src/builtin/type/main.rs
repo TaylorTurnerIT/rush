@@ -13,20 +13,17 @@ fn main() {
     };
 
     // Fetch PATH from the OS
-    let mut paths: PathBuf;
-    match env::var_os("PATH") {
-        Some(val) => paths = PathBuf::from(val),
-        None => {
-            println!("PATH is not defined in the environment.");
-            return;
-        }
-    };
 
     let exe_dir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
 
+    // Replace lines 16-29 with:
+    let raw_path = env::var_os("PATH").unwrap_or_default();
+    let mut search_dirs: Vec<PathBuf> = vec![exe_dir];
+    search_dirs.extend(env::split_paths(&raw_path));
+    let paths = env::join_paths(search_dirs).unwrap();
+
     // Iterate through each directory in PATH
     let mut dir_files;
-    paths = paths.join(exe_dir);
     for dir in env::split_paths(&paths) {
         match dir.read_dir() {
             Ok(f) => dir_files = f,
