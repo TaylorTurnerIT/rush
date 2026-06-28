@@ -31,7 +31,10 @@ fn main() {
         match dir_files.find(|x| x.as_ref().unwrap().file_name() == OsString::from(&command)) {
             Some(Ok(f)) => {
                 if f.metadata().unwrap().permissions().mode() & 0o111 != 0 {
-                    if f.path().parent().unwrap() == exe_dir {}
+                    if f.path().parent().unwrap() == exe_dir {
+                        println!("{} is a shell builtin", command);
+                        return;
+                    }
                     println!("{} is {}", command, f.path().display().to_string());
                     return;
                 }
