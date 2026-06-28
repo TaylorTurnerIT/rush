@@ -1,6 +1,7 @@
 use std::env;
 use std::ffi::OsString;
 use std::os::unix::fs::PermissionsExt;
+use std::path::PathBuf;
 
 fn main() {
     // Collect args
@@ -12,9 +13,9 @@ fn main() {
     };
 
     // Fetch PATH from the OS
-    let paths;
+    let mut paths: PathBuf;
     match env::var_os("PATH") {
-        Some(val) => paths = val,
+        Some(val) => paths = PathBuf::from(val),
         None => {
             println!("PATH is not defined in the environment.");
             return;
@@ -22,11 +23,10 @@ fn main() {
     };
 
     let exe_dir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
-    let builtin_command = exe_dir.join(command);
 
     // Iterate through each directory in PATH
     let mut dir_files;
-    paths = paths.join(builtin_command.to_str());
+    paths = paths.join(exe_dir);
     for dir in env::split_paths(&paths) {
         match dir.read_dir() {
             Ok(f) => dir_files = f,
