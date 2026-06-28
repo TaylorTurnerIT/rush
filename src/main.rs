@@ -19,7 +19,6 @@ fn exec_command(command: &str, args: &Vec<&str>) {
     // Check if builtin
     let exe_dir = env::current_exe().unwrap();
     let builtin_command = exe_dir.join(command);
-    // println!("DEBUG: builtin -> {}", builtin_command.as_ref());
     let run_builtin = Command::new(builtin_command).args(args).spawn();
     match run_builtin {
         Ok(mut child) => {
