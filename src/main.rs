@@ -4,18 +4,6 @@ use std::io::{self, Write};
 use std::process::Command;
 
 fn exec_command(command: &str, args: &Vec<&str>) {
-    // Add builtin directory to PATH temporarily
-    // let exe_dir = ;
-    // Fetch PATH from the OS and append "builtin"
-    // let paths;
-    // match env::var_os("PATH") {
-    // Some(val) => env::set_var("PATH", join_paths(val, ),
-    // None => {
-    // println!("PATH should be defined in the environment.");
-    // return;
-    // }
-    // };
-
     // Check if builtin
     let exe_dir = env::current_exe().unwrap().parent().unwrap().to_path_buf();
     let builtin_command = exe_dir.join(command);
@@ -49,7 +37,7 @@ fn main() {
         print!("$ ");
         match io::stdout().flush() {
             Ok(_t) => (),
-            Err(e) => println!("Err: {}", e),
+            Err(e) => println!("Error: {}", e),
         }
 
         // Get user input
@@ -78,10 +66,6 @@ fn main() {
             break;
         }
 
-        // match env::current_exe() {
-        //     Ok(exe_path) => println!("Path of this executable is: {}", exe_path.display()),
-        //     Err(e) => println!("failed to get current exe path: {e}"),
-        // };
         exec_command(&command, &args);
         user_input.clear();
     }
